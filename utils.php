@@ -49,7 +49,7 @@ function print_conns(string $email): string{
 function iniciar_connexio(){
     try {
         $hostname = "localhost";
-        $dbname = "dwes-bernatpujolriu-autpdo";
+        $dbname = "dwes_bernatpujolriu_autpdo";
         $username = "dwes-user";
         $pw = "dwes-pass";
         $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
