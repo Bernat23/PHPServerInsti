@@ -1,0 +1,21 @@
+<?php
+require_once "bd.php";
+$dbh = connexio();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Musclo','husk','Pere','img/g1.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Jingo','Bulldog','Joan','img/g2.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Xuia','Boll','Pere','img/g3.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Bruc','Petaner','Bernat','img/g4.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Mango','Xiuaua','Fran','img/g5.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Fluski','Yup','Arnau','img/g6.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Fonoll','Oreller','Nau','img/g7.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Swing','gaba','Gabax','img/g8.png')"); 
+$stmt->execute();
+$stmt = $dbh->prepare("INSERT INTO gos (nom, raça, propietari, img) VALUES('Coloma','Morde','Rosa','img/g9.png')"); 
+$stmt->execute();
