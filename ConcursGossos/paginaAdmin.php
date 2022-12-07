@@ -1,18 +1,10 @@
 <?php
 session_start();
 require_once 'bd.php';
-if($_SESSION["admin"] == false){
+if($_SESSION["admin"] == false){ //Comprovem que sigui admin
     header("Location: iniciSessio.php", true, 303);
 }
-/*$validat = false;
-if(isset($_GET['user']) && isset($_GET['contrasenya'])){
-    $validat = comprovarAdmin($_GET['user'], $_GET['contrasenya']);
-}
-if(!$validat){
-    header("Location: index.php?error=userpass", true, 303);
-}*/
 
-if(isset($_POST['user']) && isset($_POST['pass']))
 ?>
 <!DOCTYPE html>
 <html lang="ca">
@@ -29,7 +21,7 @@ if(isset($_POST['user']) && isset($_POST['pass']))
         <header>ADMINISTRADOR - Concurs Internacional de Gossos d'Atura</header>
         <div class="admin">
             <div class="admin-row">
-                <h1> Resultat parcial: Fase 1 </h1>
+                <h1> Resultat parcial: <?php $_SESSION["fase"] = comprovarFase($_SESSION["data"]);echo $_SESSION['fase']["num"];?></h1>
                 <div class="gossos">
                     <img class="dog" alt="Musclo" title="Musclo 15%" src="img/g1.png">
                     <img class="dog" alt="Jingo" title="Jingo 45%" src="img/g2.png">

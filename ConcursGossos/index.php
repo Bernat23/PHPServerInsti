@@ -1,13 +1,12 @@
 <?php
 session_start();
 require_once "bd.php";
-
+//Mirem si li passem una data sinó escriu l'actual;
 if(isset($_GET['data'])){
     $_SESSION["data"] = $_GET["data"];
 } else {
     $_SESSION["data"] =  $date = date('Y-m-d', time());
 }
-var_dump($_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="ca">
@@ -20,20 +19,20 @@ var_dump($_SESSION);
 <body>
 <div class="wrapper">
     <header>Votació popular del Concurs Internacional de Gossos d'Atura 2023- FASE <span> <?php $_SESSION["fase"] = comprovarFase($_SESSION["data"]);echo $_SESSION['fase']["num"];?></span></header>
-    <p class="info"> Podeu votar fins aquesta data <?php echo $_SESSION["fase"]["datafinal"]; ?></p>
+    <p class="info"> <?php if(isset($_SESSION["fase"]["datafinal"])) echo 'Podeu votar fins aquesta data' . $_SESSION["fase"]["datafinal"]; else echo 'Data no disponible per les votacions'; ?></p>
 
     <p class="warning"><?php if(isset($_SESSION['fases'][$_SESSION['fase']['num']]['vot'])) echo "RECORDA QUE J'HAS VOTAT"?></p>
     <div class="poll-area">
-        <form method="post" action="process.php">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-1" value="Musclo">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-2" value="Jingo">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-3" value="Xuia">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-4" value="Bruc">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-5" value="Mango">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-6" value="Fluski">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-7" value="Fonoll">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-8" value="Swing">
-        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-9" value="Coloma">
+        <form method="post" action="process.php"><!--Comprovem quin són els gossos que s'han de desactivar-->
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-1" value="Musclo" <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Musclo" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-2" value="Jingo"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Jingo" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-3" value="Xuia"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Xuia" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-4" value="Bruc"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Bruc" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-5" value="Mango"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Mango" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-6" value="Fluski"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Fluski" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-7" value="Fonoll"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Fonoll" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-8" value="Swing"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Swing" == $eliminat)echo 'hidden';?> >
+        <input type="checkbox" name="gos" onchange="this.form.submit();" id="opt-9" value="Coloma"  <?php if(!isset($_SESSION["fase"]["datafinal"])) echo 'disabled'; if(isset($_SESSION['eliminats'])) foreach($_SESSION['eliminats'] as $eliminat) if("Coloma" == $eliminat)echo 'hidden';?> >
         <label for="opt-1" class="opt-1">
             <div class="row">
                 <div class="column">
@@ -137,7 +136,7 @@ var_dump($_SESSION);
     </div>
 
     
-    <p> Mostra els <a href="resultats.html">resultats</a> de les fases anteriors.</p>
+    <p> Mostra els <a href="resultats.php">resultats</a> de les fases anteriors.</p>
 </div>
 
 </body>

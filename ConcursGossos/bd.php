@@ -2,6 +2,7 @@
 require_once "fase.php";
 require_once "gos.php";
 
+//Ens connectem a la base de dades
 function connexio(){
   try {
     $hostname = "localhost";
@@ -10,7 +11,6 @@ function connexio(){
     $pw = "dwes-pass";
     $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
   } catch (PDOException $e) {
-    echo "Failed to get DB handle: " . $e->getMessage() . "\n";
     exit;
     }
     return $dbh;
@@ -24,6 +24,7 @@ function insertarAdmin($user, $password) {
   $stmt->execute( array($user,$password));
 }
 
+//Comprova que l'admin introduit sigui el correcte
 function comprovarAdmin($user, $password) {
   $dbh = connexio();
   $stmt = $dbh->prepare("SELECT user, password FROM admin  WHERE user = ? and password = ?"); 
@@ -35,16 +36,7 @@ function comprovarAdmin($user, $password) {
   return true;
 }
 
-function obtenirAdmin($user, $password) {
-  $dbh = connexio();
-  $stmt = $dbh->prepare("SELECT user, password FROM admin  WHERE user = ? and password = ?"); 
-  $stmt->execute( array($user,md5($password)));
-  $result = $stmt -> fetch();
-  if(empty($result)){
-    return false;
-  }
-  return true;
-}
+
 
 //Comprova si l'usuari que li passem ja existeix a la taula admin
 function comprovarExisteixAdmin($user) {
@@ -67,18 +59,21 @@ function insertarGos($nom, $raça, $propietari, $img) {
   $stmt->execute( array($nom, $raça, $propietari, $img));
 }
 
+//Modifiquem un gos a partir del nom
 function modificarGos($nom, $raça, $propietari, $img){
   $dbh = connexio();
   $stmt = $dbh->prepare("UPDATE gos SET raça= ? , propietari= ?, img=? WHERE nom= ?");
   $stmt->execute( array($raça, $propietari, $img, $nom));
 }
 
+//Per eliminar un gos de la base de dades
 function eliminarGos($nom) {
   $dbh = connexio();
   $stmt = $dbh->prepare("DELETE FROM gos WHERE nom=?");
   $stmt -> execute($nom);
 }
 
+//Per obtenir el gos a partir del nom
 function obtenirNomGos($nom) {
   $dbh = connexio();
   $stmt = $dbh->prepare("SELECT nom, raça, propietari, img FROM GOS WHERE nom = ?;"); 
@@ -87,6 +82,7 @@ function obtenirNomGos($nom) {
   return $result;
 }
 
+//Retorna l'id de la base de dades del gos
 function idGos($gos){
   $dbh = connexio();
   $stmt = $dbh -> prepare("SELECT id FROM gos WHERE nom = ?");
@@ -95,6 +91,7 @@ function idGos($gos){
   return $idGos['id'];
 }
 
+//Obté l'objecte a gos a partir del nom
 function obtenirGos($nom) {
   $dbh = connexio();
   $stmt = $dbh->prepare("SELECT nom, raça, propietari, img FROM GOS WHERE nom = ?;"); 
@@ -104,6 +101,8 @@ function obtenirGos($nom) {
   return $gos;
 }
 
+
+//Obté un llistat de tots els gossos
 function obtenirTotsElsGossos(){
   $dbh = connexio();
   $llistGossos = null;
@@ -128,8 +127,7 @@ function modificarFase($fase, $dataFinal) {
       $stmt = $dbh -> prepare("UPDATE fase SET dataFinal = ? WHERE  num = ? ");
       $stmt -> execute(array($dataFinal, $fase));
     }
-    catch(PDOException $e){
-      var_dump($e);   
+    catch(PDOException $e){ 
     }
   }
 }
@@ -149,7 +147,8 @@ function comprovarFase($data){
     }
   }
   if(empty($primeraFila)){
-    return 0;
+    $primeraFila['num'] = 0;
+    $primeraFila['dataFinal'] = 0;
   }
   return $primeraFila;
 }
@@ -174,6 +173,7 @@ function insertarVot($faseid, $gosid) {
   
 }
 
+//Serveix per eliminar només un vot quan algú rectifica de vot
 function eliminarVot($faseid, $gosid){
   $dbh = connexio();
   $stmt = $dbh -> prepare("DELETE FROM resultat WHERE faseid=? AND gosid = ? LIMIT 1");
@@ -182,6 +182,7 @@ function eliminarVot($faseid, $gosid){
   
 }
 
+//Serveix per esborrar tots els vots d'una fase
 function esborrarPerFase($faseid) {
   $dbh = connexio();
   $stmt = $dbh -> prepare("DELETE FROM resultat WHERE faseid = ?");
@@ -196,29 +197,51 @@ function esborrarTotsVots() {
   $stmt -> execute();
 }
 
+//Podem votar els gossos
 function votar($fase, $gos){
   $idFase = idFase($fase);
   $idGos = idGos($gos);
   insertarVot($idFase, $idGos);
 }
 
+//Podem treue el vot anterior amb el número de fase i el nom del gos
 function treureVot($fase, $gos){
   $idFase = idFase($fase);
   $idGos = idGos($gos);
-  echo $idFase . '   '.$idGos;
   eliminarVot($idFase, $idGos);
 }
 
-function consultarVots($fase){
+
+//Retorna la puntuació de cada gos
+function votsPerGos($gos, $fase){
   $dbh = connexio();
+  $idGos = idGos($gos);
   $idFase = idFase($fase);
-  $stmt = $dbh -> prepare("SELECT count(*), gosid, faseid FROM resultat WHERE faseid = ? GROUP BY gosid, faseid;");
-  $stmt->execute(array($idFase));
-  foreach($stmt as $votacio){
-    $llistVotacions[] = $votacio;
+  $stmt = $dbh -> prepare("SELECT gosid from resultat WHERE faseid = ? AND gosid = ?;");
+  $stmt -> execute(array($idFase, $idGos));
+  $vots['gos'] = $gos;
+  $vots['id'] = $idGos; 
+  $vots["vots"] = 0;
+  foreach($stmt as $vot){
+    $vots['vots']++;
   }
-  return $llistVotacions;
+  return $vots;
 }
+
+//Retorna el número de vots en un fase
+function totalVotsFase($fase) {
+  $idFase = idFase($fase);
+  $dbh = connexio();
+  $stmt = $dbh -> prepare("SELECT gosid from resultat WHERE faseid = ?;");
+  $stmt -> execute(array($idFase));
+  $nVots = 0;
+  foreach($stmt as $votacio){
+    $nVots++;
+  }
+  
+  return $nVots;
+}
+
 
 
 ?>

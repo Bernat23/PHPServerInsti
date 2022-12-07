@@ -1,10 +1,11 @@
 <?php
 session_start();
-if(isset($_SESSION["admin"])){
+if(isset($_SESSION["admin"])){ //Comprovem que ja és admin
     if($_SESSION["admin"] == true){
         header("Location: paginaAdmin.php", true, 303);
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ca">
