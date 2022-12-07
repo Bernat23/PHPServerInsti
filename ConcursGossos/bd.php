@@ -26,7 +26,7 @@ function insertarAdmin($user, $password) {
 
 function comprovarAdmin($user, $password) {
   $dbh = connexio();
-  $stmt = $dbh->prepare("SELECT user, password FROM ADMIN  WHERE user = ? and password = ?"); 
+  $stmt = $dbh->prepare("SELECT user, password FROM admin  WHERE user = ? and password = ?"); 
   $stmt->execute( array($user,md5($password)));
   $result = $stmt -> fetch();
   if(empty($result)){
@@ -37,7 +37,7 @@ function comprovarAdmin($user, $password) {
 
 function obtenirAdmin($user, $password) {
   $dbh = connexio();
-  $stmt = $dbh->prepare("SELECT user, password FROM ADMIN  WHERE user = ? and password = ?"); 
+  $stmt = $dbh->prepare("SELECT user, password FROM admin  WHERE user = ? and password = ?"); 
   $stmt->execute( array($user,md5($password)));
   $result = $stmt -> fetch();
   if(empty($result)){
@@ -49,7 +49,7 @@ function obtenirAdmin($user, $password) {
 //Comprova si l'usuari que li passem ja existeix a la taula admin
 function comprovarExisteixAdmin($user) {
   $dbh = connexio();
-  $stmt = $dbh->prepare("SELECT user FROM ADMIN  WHERE user = ?"); 
+  $stmt = $dbh->prepare("SELECT user FROM admin  WHERE user = ?"); 
   $stmt->execute( array($user));
   $result = $stmt -> fetch();
   if(empty($result)){
